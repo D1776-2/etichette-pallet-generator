@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Genera Etichetta</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .container {
+      width: 148mm;
+      min-height: 210mm;
+      border: 1px solid black;
+      padding: 10mm;
+      margin: auto;
+      position: relative;
+    }
+
+    .logo {
+      position: absolute;
+      top: 10mm;
+      right: 10mm;
+      width: 80px;
+      height: auto;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+    .input-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .input-group input {
+      margin: 5px;
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    table, th, td {
+      border: 1px solid black;
+    }
+
+    th, td {
+      padding: 5px;
+      text-align: center;
+    }
+
+    td {
+      cursor: pointer;
+    }
+
+    button {
+      margin: 5px;
+      padding: 8px 15px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      .input-group {
+        display: none;
+      }
+
+      .container {
+        width: 148mm;
+        min-height: 210mm;
+        margin: 43.5mm auto;
+        border: none;
+        padding: 10mm;
+      }
+
+      table {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="label">
+    <img src="https://www.utekvision.com/pub/media/logo/default/logo_utek_1.png" alt="UTEK Logo" class="logo">
+    <h1><span id="companyDisplay">UTEK SRL</span></h1>
+    <h1>DDT NO: <span id="ddtNoDisplay"></span></h1>
+    <h1>PALLET NO: <span id="palletNoDisplay"></span></h1>
+    <table>
+      <thead>
+        <tr>
+          <th>PALLET NO</th>
+          <th>ARTICLE NO</th>
+          <th>DESCRIPTION</th>
+          <th>QUANTITY</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="input-group">
+    <label>AZIENDA: <input type="text" id="company" value="UTEK SRL" /></label><br>
+    <label>DDT NO: <input type="text" id="ddtNo" /></label>
+    <label>PALLET NO: <input type="text" id="palletNo" /></label><br>
+    <button onclick="app.updateLabel()">Aggiorna</button>
+    <button onclick="app.addRow()">Aggiungi Riga</button>
+    <button onclick="app.removeLastRow()">Rimuovi Ultima Riga</button>
+    <button onclick="app.print()">Stampa</button>
+  </div>
+
+  <script>
+    const app = {
+      config: {
+        defaultRows: 5
+      },
+
+      elements: {
+        ddtNo: document.getElementById('ddtNo'),
+        palletNo: document.getElementById('palletNo'),
+        company: document.getElementById('company'),
+        companyDisplay: document.getElementById('companyDisplay'),
+        ddtNoDisplay: document.getElementById('ddtNoDisplay'),
+        palletNoDisplay: document.getElementById('palletNoDisplay'),
+        tableBody: document.getElementById('tableBody')
+      },
+
+      init() {
+        for (let i = 0; i < this.config.defaultRows; i++) {
+          this.addRow();
+        }
+      },
+
+      updateLabel() {
+        this.elements.companyDisplay.textContent = this.elements.company.value;
+        this.elements.ddtNoDisplay.textContent = this.elements.ddtNo.value;
+        this.elements.palletNoDisplay.textContent = this.elements.palletNo.value;
+      },
+
+      removeLastRow() {
+        const tbody = this.elements.tableBody;
+        if (tbody.rows.length > 0) {
+          tbody.deleteRow(tbody.rows.length - 1);
+        }
+      },
+
+      addRow() {
+        const row = document.createElement('tr');
+        for (let i = 0; i < 4; i++) {
+          const cell = document.createElement('td');
+          cell.contentEditable = 'true';
+          row.appendChild(cell);
+        }
+        this.elements.tableBody.appendChild(row);
+      },
+
+      validateInputs() {
+        const ddt = this.elements.ddtNo.value.trim();
+        const pallet = this.elements.palletNo.value.trim();
+        
+        if (!ddt || !pallet) {
+          alert('Compila i campi DDT NO e PALLET NO prima di stampare.');
+          return false;
+        }
+        return true;
+      },
+
+      print() {
+        if (!this.validateInputs()) return;
+        window.print();
+      }
+    };
+
+    window.onload = () => app.init();
+  </script>
+</body>
+</html>
