@@ -4,19 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Genera Etichetta</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 20px;
     }
 
     .container {
       width: 148mm;
       min-height: 210mm;
-      border: 1px solid black;
+      border: 1px solid var(--primary);
       padding: 10mm;
       margin: auto;
       position: relative;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     .logo {
@@ -30,42 +32,31 @@
     h1 {
       font-size: 18px;
       margin: 10px 0;
+      color: black;
     }
 
     .input-group {
-      text-align: center;
-      margin-top: 20px;
+      max-width: 400px;
+      margin: 20px auto;
     }
 
-    .input-group input {
-      margin: 5px;
-      padding: 5px;
-      font-size: 16px;
+    .input-group form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
 
     table {
       width: 100%;
-      border-collapse: collapse;
       margin-top: 10px;
-    }
-
-    table, th, td {
-      border: 1px solid black;
+      color: black;
     }
 
     th, td {
-      padding: 5px;
-      text-align: center;
+      color: black;
     }
 
     td {
-      cursor: pointer;
-    }
-
-    button {
-      margin: 5px;
-      padding: 8px 15px;
-      font-size: 16px;
       cursor: pointer;
     }
 
@@ -118,13 +109,34 @@
   </div>
 
   <div class="input-group">
-    <label>AZIENDA: <input type="text" id="company" value="UTEK SRL" /></label><br>
-    <label>DDT NO: <input type="text" id="ddtNo" /></label>
-    <label>PALLET NO: <input type="text" id="palletNo" /></label><br>
-    <button onclick="app.updateLabel()">Aggiorna</button>
-    <button onclick="app.addRow()">Aggiungi Riga</button>
-    <button onclick="app.removeLastRow()">Rimuovi Ultima Riga</button>
-    <button onclick="app.print()">Stampa</button>
+    <form>
+      <label for="company">
+        AZIENDA
+        <input type="text" id="company" value="UTEK SRL" />
+      </label>
+
+      <label for="ddtNo">
+        DDT NO
+        <input type="text" id="ddtNo" />
+      </label>
+
+      <label for="palletNo">
+        PALLET NO
+        <input type="text" id="palletNo" />
+      </label>
+
+      <label for="logoUrl">
+        LOGO URL
+        <input type="text" id="logoUrl" value="https://www.utekvision.com/pub/media/logo/default/logo_utek_1.png" />
+      </label>
+
+      <div class="grid">
+        <button type="button" onclick="app.updateLabel()">Aggiorna</button>
+        <button type="button" onclick="app.addRow()">Aggiungi Riga</button>
+        <button type="button" onclick="app.removeLastRow()">Rimuovi Ultima Riga</button>
+        <button type="button" onclick="app.print()">Stampa</button>
+      </div>
+    </form>
   </div>
 
   <script>
@@ -140,7 +152,9 @@
         companyDisplay: document.getElementById('companyDisplay'),
         ddtNoDisplay: document.getElementById('ddtNoDisplay'),
         palletNoDisplay: document.getElementById('palletNoDisplay'),
-        tableBody: document.getElementById('tableBody')
+        tableBody: document.getElementById('tableBody'),
+        logoUrl: document.getElementById('logoUrl'),
+        logo: document.querySelector('.logo')
       },
 
       init() {
@@ -153,6 +167,7 @@
         this.elements.companyDisplay.textContent = this.elements.company.value;
         this.elements.ddtNoDisplay.textContent = this.elements.ddtNo.value;
         this.elements.palletNoDisplay.textContent = this.elements.palletNo.value;
+        this.elements.logo.src = this.elements.logoUrl.value;
       },
 
       removeLastRow() {
