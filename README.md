@@ -35,5 +35,5 @@ Un semplice progetto **low-code in HTML/CSS/JS** per generare e stampare **etich
 
 ## 📅 Da completare
 
-1. Media queries per visualizzazione corretta su desktop 16:9 (è stato fatto per 4:3)
+1. Media queries per visualizzazione corretta su desktop
 2. Export in A5
